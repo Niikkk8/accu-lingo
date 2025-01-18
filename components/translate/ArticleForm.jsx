@@ -321,6 +321,66 @@ const CompleteForm = () => {
         setStepErrors();
         if (validateStep()) {
             try {
+                // Prepare the data to send to the API
+                const apiData = {
+                    basicInfo: formData.basicInfo,
+                    productServiceDetails: formData.productServiceDetails,
+                    articleDetails: formData.articleDetails,
+                    mediaInsights: formData.mediaInsights,
+                };
+
+                // Make the API call to the content insight API
+                const response = await fetch('https://content-insight-api.onrender.com/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(apiData),
+                });
+
+                const result = await response.json();
+                console.log(result)
+
+                // Check if content is defined before accessing article
+                if (result.content && result.content.article) {
+                    // Format the article data
+                    const formattedArticle = {
+                        englishArticle: result.content.article,
+                        translations: {
+                            hindi: "",
+                            marathi: "",
+                            gujarati: "",
+                            tamil: "",
+                            kannada: "",
+                            telugu: "",
+                            bengali: "",
+                            malayalam: "",
+                            punjabi: "",
+                            odia: ""
+                        }
+                    };
+
+                    // Append the generated article to the form data
+                    setFormData((prev) => ({
+                        ...prev,
+                        articleDetails: {
+                            ...prev.articleDetails,
+                            articleGeneration: formattedArticle, // Append the formatted article
+                        },
+                    }));
+                } else {
+                    console.error('Article generation failed or returned unexpected structure:', result);
+                }
+
+                // New API call to store form data in Astra DB
+                await fetch('/api/brand-create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(apiData), // Send the same data to Astra DB
+                });
+
                 console.log('Form submitted:', formData);
                 setShowSuccess(true);
                 setActiveStep(4);
