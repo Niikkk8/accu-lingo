@@ -228,24 +228,24 @@ const CompleteForm = () => {
             case 0: // Basic Info
                 const { brandName, industryType, productOrServiceType, targetAudience } = formData.basicInfo;
                 return Boolean(brandName && industryType && productOrServiceType && targetAudience);
-
+            
             case 1: // Product Service Details
                 const { features, USPs, primaryProblemSolved } = formData.productServiceDetails;
                 return Boolean(features.length > 0 && USPs.length > 0 && primaryProblemSolved);
-
+            
             case 2: // Media Insights
                 const { primaryAudienceDemographics, painPointsAddressed, competitors, marketPosition } = formData.mediaInsights;
                 return Boolean(
-                    primaryAudienceDemographics &&
-                    painPointsAddressed.length > 0 &&
-                    competitors.length > 0 &&
+                    primaryAudienceDemographics && 
+                    painPointsAddressed.length > 0 && 
+                    competitors.length > 0 && 
                     marketPosition
                 );
-
+            
             case 3: // Article Details
                 const { articleType, articleLength, keywordsToEmphasize } = formData.articleDetails;
                 return Boolean(articleType && articleLength >= 100 && keywordsToEmphasize.length > 0);
-
+            
             default:
                 return false;
         }

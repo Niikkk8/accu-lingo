@@ -4,9 +4,12 @@ import { useState, useEffect } from 'react';
 import { Globe2 } from 'lucide-react';
 import { scrollToElement } from '@/lib/smoothScroll';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const NavBar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
+    const pathname = usePathname()
+    console.log(pathname)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -31,24 +34,29 @@ const NavBar = () => {
                         <span className="ml-2 text-2xl font-bold text-gray-900">AccuLingo</span>
                     </Link>
                     <div className="flex items-center space-x-8">
-                        <button
-                            onClick={(e) => handleNavClick(e, 'features')}
-                            className="text-gray-700 hover:text-indigo-600 transition-colors"
-                        >
-                            Features
-                        </button>
-                        <button
-                            onClick={(e) => handleNavClick(e, 'languages')}
-                            className="text-gray-700 hover:text-indigo-600 transition-colors"
-                        >
-                            Languages
-                        </button>
-                        <button
-                            onClick={(e) => handleNavClick(e, 'pricing')}
-                            className="text-gray-700 hover:text-indigo-600 transition-colors"
-                        >
-                            Pricing
-                        </button>
+                        {
+                            pathname === '/' &&
+                            <>
+                                <button
+                                    onClick={(e) => handleNavClick(e, 'features')}
+                                    className="text-gray-700 hover:text-indigo-600 transition-colors"
+                                >
+                                    Features
+                                </button>
+                                <button
+                                    onClick={(e) => handleNavClick(e, 'languages')}
+                                    className="text-gray-700 hover:text-indigo-600 transition-colors"
+                                >
+                                    Languages
+                                </button>
+                                <button
+                                    onClick={(e) => handleNavClick(e, 'pricing')}
+                                    className="text-gray-700 hover:text-indigo-600 transition-colors"
+                                >
+                                    Pricing
+                                </button>
+                            </>
+                        }
                         <Link
                             href="/media"
                             className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transform transition-transform hover:scale-105"
