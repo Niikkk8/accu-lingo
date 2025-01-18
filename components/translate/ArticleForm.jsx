@@ -19,6 +19,7 @@ import {
     Alert,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useRouter } from 'next/navigation';
 
 // Theme configuration
 const theme = createTheme({
@@ -129,6 +130,7 @@ const CompleteForm = () => {
         },
     });
     const [showSuccess, setShowSuccess] = useState(false);
+    const router = useRouter()
 
     // Form options
     const industryTypes = [
@@ -372,27 +374,29 @@ const CompleteForm = () => {
                     }));
 
                     // Store in Astra DB with complete data
-                    await fetch('/api/brand-create', {
+                    const dbResponse = await fetch('/api/brand-create', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(completeData), // Send the complete data including article
+                        body: JSON.stringify(completeData),
                     });
 
-                    setShowSuccess(true);
-                    setActiveStep(4);
-                    setTimeout(() => {
-                        setFormData(initialFormData);
-                        setShowSuccess(false);
-                    }, 3000);
+                    const dbResult = await dbResponse.json();
+
+                    if (dbResult.id) {
+                        setShowSuccess(true);
+                        // Navigate to the article page
+                        router.push(`/article/${dbResult.id}`);
+                    } else {
+                        throw new Error('No ID received from database');
+                    }
                 } else {
                     throw new Error('Article generation failed or returned unexpected structure');
                 }
             } catch (error) {
                 console.error('Submission error:', error);
-                // You might want to set an error state here to show to the user
-                setErrors(error.message);
+                setError(error.message);
             }
         }
     };
