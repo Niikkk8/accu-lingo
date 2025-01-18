@@ -17,6 +17,11 @@ import {
     ThemeProvider,
     createTheme,
     Alert,
+    CircularProgress,
+    List,
+    ListItem,
+    ListItemText,
+    Divider,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -88,6 +93,9 @@ const MarketAudienceForm = () => {
     const [formData, setFormData] = useState(initialFormData);
     const [tempFeature, setTempFeature] = useState('');
     const [tempUSP, setTempUSP] = useState('');
+    const [apiResponse, setApiResponse] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [errors, setErrors] = useState({
         basicInfo: {
             brandName: false,
@@ -219,7 +227,6 @@ const MarketAudienceForm = () => {
     };
 
     // Validation
-    // Validation
     const validateStep = () => {
         if (activeStep === 0) {
             const { brandName, industryType, productOrServiceType, targetAudience } = formData.basicInfo;
@@ -234,7 +241,6 @@ const MarketAudienceForm = () => {
         return false;
     };
 
-    // Add a separate function for setting errors
     const setStepErrors = () => {
         if (activeStep === 0) {
             const { brandName, industryType, productOrServiceType, targetAudience } = formData.basicInfo;
@@ -267,27 +273,47 @@ const MarketAudienceForm = () => {
     };
 
     const handleNext = () => {
-        setStepErrors(); // Set errors first
+        setStepErrors();
         if (validateStep()) {
             setActiveStep((prev) => prev + 1);
         }
     };
 
     const handleSubmit = async () => {
-        setStepErrors(); // Set errors first
+        setStepErrors();
         if (validateStep()) {
+            setLoading(true);
+            setError(null);
             try {
-                // Handle form submission here
-                console.log('Form submitted:', formData);
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        basicInfo: formData.basicInfo,
+                        productServiceDetails: {
+                            description: formData.productServiceDetails.primaryProblemSolved,
+                            features: formData.productServiceDetails.features,
+                            USPs: formData.productServiceDetails.USPs,
+                            primaryProblemSolved: formData.productServiceDetails.primaryProblemSolved,
+                        },
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch market insights');
+                }
+
+                const data = await response.json();
+                setApiResponse(data.mediaInsights);
                 setShowSuccess(true);
                 setActiveStep(2);
-                // Reset form after successful submission
-                setTimeout(() => {
-                    setFormData(initialFormData);
-                    setShowSuccess(false);
-                }, 3000);
             } catch (error) {
                 console.error('Submission error:', error);
+                setError(error.message);
+            } finally {
+                setLoading(false);
             }
         }
     };
@@ -296,7 +322,8 @@ const MarketAudienceForm = () => {
         setFormData(initialFormData);
         setActiveStep(0);
         setShowSuccess(false);
-        // Reset all errors
+        setApiResponse(null);
+        setError(null);
         setErrors({
             basicInfo: {
                 brandName: false,
@@ -310,11 +337,86 @@ const MarketAudienceForm = () => {
                 USPs: false,
             },
         });
-        // Reset temporary states
         setTempFeature('');
         setTempUSP('');
     };
-    
+
+    const renderSuccessContent = () => {
+        if (loading) {
+            return (
+                <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
+                    <CircularProgress />
+                </Box>
+            );
+        }
+
+        if (error) {
+            return (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                    {error}
+                </Alert>
+            );
+        }
+
+        if (!apiResponse) {
+            return (
+                <Typography variant="body1" color="text.secondary">
+                    No market insights available
+                </Typography>
+            );
+        }
+
+        return (
+            <Box sx={{ mt: 3 }}>
+                <Typography variant="h6" gutterBottom>
+                    Market Insights
+                </Typography>
+
+                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                    Primary Audience Demographics
+                </Typography>
+                <Typography variant="body1" paragraph>
+                    {apiResponse.primaryAudienceDemographics}
+                </Typography>
+
+                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                    Pain Points Addressed
+                </Typography>
+                <List>
+                    {apiResponse.painPointsAddressed.map((point, index) => (
+                        <ListItem key={index}>
+                            <ListItemText primary={point} />
+                        </ListItem>
+                    ))}
+                </List>
+
+                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                    Competitors
+                </Typography>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                    {apiResponse.competitors.map((competitor, index) => (
+                        <Chip key={index} label={competitor} variant="outlined" />
+                    ))}
+                </Box>
+
+                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                    Market Position
+                </Typography>
+                <Typography variant="body1" paragraph>
+                    {apiResponse.marketPosition}
+                </Typography>
+
+                <Button
+                    variant="contained"
+                    onClick={handleReset}
+                    sx={{ mt: 3 }}
+                >
+                    Submit Another Response
+                </Button>
+            </Box>
+        );
+    };
+
     // Step content renderer
     const renderStepContent = (step) => {
         switch (step) {
@@ -445,6 +547,17 @@ const MarketAudienceForm = () => {
                         </Stack>
                     </Box>
                 );
+            case 2:
+                return (
+                    <Box textAlign="left">
+                        {showSuccess && (
+                            <Alert severity="success" sx={{ mb: 3 }}>
+                                Form submitted successfully!
+                            </Alert>
+                        )}
+                        {renderSuccessContent()}
+                    </Box>
+                );
             default:
                 return null;
         }
@@ -453,15 +566,6 @@ const MarketAudienceForm = () => {
     return (
         <ThemeProvider theme={theme}>
             <Container maxWidth="md">
-                {showSuccess && (
-                    <Alert
-                        severity="success"
-                        sx={{ mt: 2 }}
-                        onClose={() => setShowSuccess(false)}
-                    >
-                        Form submitted successfully!
-                    </Alert>
-                )}
                 <FormPaper elevation={3}>
                     <Stepper activeStep={activeStep}>
                         <Step>
@@ -470,41 +574,29 @@ const MarketAudienceForm = () => {
                         <Step>
                             <StepLabel>Product/Service Details</StepLabel>
                         </Step>
+                        <Step>
+                            <StepLabel>Results</StepLabel>
+                        </Step>
                     </Stepper>
 
                     <StepContainer>
-                        {activeStep === 2 ? (
-                            <Box textAlign="center">
-                                <Typography variant="h6" gutterBottom>
-                                    Form Submitted Successfully!
-                                </Typography>
+                        {renderStepContent(activeStep)}
+                        {activeStep !== 2 && (
+                            <ButtonContainer>
+                                <Button
+                                    disabled={activeStep === 0}
+                                    onClick={handleBack}
+                                >
+                                    Back
+                                </Button>
                                 <Button
                                     variant="contained"
-                                    onClick={handleReset}
-                                    sx={{ mt: 2 }}
+                                    onClick={activeStep === 1 ? handleSubmit : handleNext}
+                                    disabled={!validateStep()}
                                 >
-                                    Submit Another Response
+                                    {activeStep === 1 ? 'Submit' : 'Next'}
                                 </Button>
-                            </Box>
-                        ) : (
-                            <>
-                                {renderStepContent(activeStep)}
-                                <ButtonContainer>
-                                    <Button
-                                        disabled={activeStep === 0}
-                                        onClick={handleBack}
-                                    >
-                                        Back
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        onClick={activeStep === 1 ? handleSubmit : handleNext}
-                                        disabled={!validateStep()}
-                                    >
-                                        {activeStep === 1 ? 'Submit' : 'Next'}
-                                    </Button>
-                                </ButtonContainer>
-                            </>
+                            </ButtonContainer>
                         )}
                     </StepContainer>
                 </FormPaper>
