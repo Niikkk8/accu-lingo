@@ -57,6 +57,12 @@ const NavBar = () => {
                             </>
                         }
                         <Link
+                            href="https://content-strmlt.streamlit.app/"
+                            className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transform transition-transform hover:scale-105"
+                        >
+                            Media Scraper
+                        </Link>
+                        <Link
                             href="/media"
                             className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transform transition-transform hover:scale-105"
                         >
