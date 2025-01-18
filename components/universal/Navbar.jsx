@@ -50,10 +50,16 @@ const NavBar = () => {
                             Pricing
                         </button>
                         <Link
-                            href="/try"
+                            href="/media"
                             className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transform transition-transform hover:scale-105"
                         >
-                            Try Free
+                            Media Insights
+                        </Link>
+                        <Link
+                            href="/translate"
+                            className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transform transition-transform hover:scale-105"
+                        >
+                            Generate Articles
                         </Link>
                     </div>
                 </div>
