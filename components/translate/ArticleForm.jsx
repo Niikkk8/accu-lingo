@@ -331,7 +331,7 @@ const CompleteForm = () => {
                     mediaInsights: formData.mediaInsights,
                 };
 
-                // Make the API call to the content insight API
+                // Generate article content
                 const response = await fetch('https://content-insight-api.onrender.com/generate', {
                     method: 'POST',
                     headers: {
@@ -342,61 +342,59 @@ const CompleteForm = () => {
 
                 const result = await response.json();
 
-                // Check if content is defined before accessing article
-                if (result.content && result.content.article) {
-                    // Format the article data
-                    const formattedArticle = {
-                        englishArticle: result.content.article,
-                        translations: {
-                            hindi: "",
-                            marathi: "",
-                            gujarati: "",
-                            tamil: "",
-                            kannada: "",
-                            telugu: "",
-                            bengali: "",
-                            malayalam: "",
-                            punjabi: "",
-                            odia: ""
-                        }
-                    };
-
-                    // Create complete data with article
-                    const completeData = {
-                        ...apiData,
-                        articleGeneration: formattedArticle
-                    };
-
-                    // Update form data state
-                    setFormData(prevData => ({
-                        ...prevData,
-                        articleGeneration: formattedArticle
-                    }));
-
-                    // Store in Astra DB with complete data
-                    const dbResponse = await fetch('/api/brand-create', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(completeData),
-                    });
-
-                    const dbResult = await dbResponse.json();
-
-                    if (dbResult.id) {
-                        setShowSuccess(true);
-                        // Navigate to the article page
-                        router.push(`/article/${dbResult.id}`);
-                    } else {
-                        throw new Error('No ID received from database');
-                    }
-                } else {
-                    throw new Error('Article generation failed or returned unexpected structure');
+                if (!result.content?.article) {
+                    setShowError('Article generation failed');
+                    return;
                 }
+
+                // Format the article data
+                const formattedArticle = {
+                    englishArticle: result.content.article,
+                    translations: {
+                        hindi: "",
+                        marathi: "",
+                        gujarati: "",
+                        tamil: "",
+                        kannada: "",
+                        telugu: "",
+                        bengali: "",
+                        malayalam: "",
+                        punjabi: "",
+                        odia: ""
+                    }
+                };
+
+                // Create complete data with article
+                const completeData = {
+                    ...apiData,
+                    articleGeneration: formattedArticle
+                };
+
+                // Store in database
+                const dbResponse = await fetch('/api/brand-create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(completeData),
+                });
+
+                if (!dbResponse.ok) {
+                    throw new Error('Database operation failed');
+                }
+
+                const dbResult = await dbResponse.json();
+
+                if (!dbResult?.id) {
+                    throw new Error('Invalid response from database');
+                }
+
+                setShowSuccess(true);
+                router.push(`/article/${dbResult.id}`);
+
             } catch (error) {
                 console.error('Submission error:', error);
-                setError(error.message);
+                setShowError(error.message || 'An error occurred during submission');
             }
         }
     };
