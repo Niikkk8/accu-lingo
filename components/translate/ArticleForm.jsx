@@ -228,24 +228,24 @@ const CompleteForm = () => {
             case 0: // Basic Info
                 const { brandName, industryType, productOrServiceType, targetAudience } = formData.basicInfo;
                 return Boolean(brandName && industryType && productOrServiceType && targetAudience);
-            
+
             case 1: // Product Service Details
                 const { features, USPs, primaryProblemSolved } = formData.productServiceDetails;
                 return Boolean(features.length > 0 && USPs.length > 0 && primaryProblemSolved);
-            
+
             case 2: // Media Insights
                 const { primaryAudienceDemographics, painPointsAddressed, competitors, marketPosition } = formData.mediaInsights;
                 return Boolean(
-                    primaryAudienceDemographics && 
-                    painPointsAddressed.length > 0 && 
-                    competitors.length > 0 && 
+                    primaryAudienceDemographics &&
+                    painPointsAddressed.length > 0 &&
+                    competitors.length > 0 &&
                     marketPosition
                 );
-            
+
             case 3: // Article Details
                 const { articleType, articleLength, keywordsToEmphasize } = formData.articleDetails;
                 return Boolean(articleType && articleLength >= 100 && keywordsToEmphasize.length > 0);
-            
+
             default:
                 return false;
         }
@@ -339,7 +339,6 @@ const CompleteForm = () => {
                 });
 
                 const result = await response.json();
-                console.log(result)
 
                 // Check if content is defined before accessing article
                 if (result.content && result.content.article) {
@@ -360,36 +359,40 @@ const CompleteForm = () => {
                         }
                     };
 
-                    // Append the generated article to the form data
-                    setFormData((prev) => ({
-                        ...prev,
-                        articleDetails: {
-                            ...prev.articleDetails,
-                            articleGeneration: formattedArticle, // Append the formatted article
-                        },
+                    // Create complete data with article
+                    const completeData = {
+                        ...apiData,
+                        articleGeneration: formattedArticle
+                    };
+
+                    // Update form data state
+                    setFormData(prevData => ({
+                        ...prevData,
+                        articleGeneration: formattedArticle
                     }));
+
+                    // Store in Astra DB with complete data
+                    await fetch('/api/brand-create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(completeData), // Send the complete data including article
+                    });
+
+                    setShowSuccess(true);
+                    setActiveStep(4);
+                    setTimeout(() => {
+                        setFormData(initialFormData);
+                        setShowSuccess(false);
+                    }, 3000);
                 } else {
-                    console.error('Article generation failed or returned unexpected structure:', result);
+                    throw new Error('Article generation failed or returned unexpected structure');
                 }
-
-                // New API call to store form data in Astra DB
-                await fetch('/api/brand-create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(apiData), // Send the same data to Astra DB
-                });
-
-                console.log('Form submitted:', formData);
-                setShowSuccess(true);
-                setActiveStep(4);
-                setTimeout(() => {
-                    setFormData(initialFormData);
-                    setShowSuccess(false);
-                }, 3000);
             } catch (error) {
                 console.error('Submission error:', error);
+                // You might want to set an error state here to show to the user
+                setErrors(error.message);
             }
         }
     };

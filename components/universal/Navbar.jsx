@@ -9,7 +9,6 @@ import { usePathname } from 'next/navigation';
 const NavBar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const pathname = usePathname()
-    console.log(pathname)
 
     useEffect(() => {
         const handleScroll = () => {
