@@ -3,6 +3,7 @@ import Features from '@/components/home/Features';
 import LanguageSection from '@/components/home/LanguageSection';
 import PricingSection from '@/components/home/PricingSection';
 import TrustSection from '@/components/home/TrustSection';
+import TeamMembers from '@/components/home/TeamMember';
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <Features />
       <LanguageSection />
       <PricingSection />
+      <TeamMembers />
       <TrustSection />
     </div>
   );
