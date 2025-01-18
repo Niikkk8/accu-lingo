@@ -367,19 +367,19 @@ const MarketAudienceForm = () => {
         }
 
         return (
-            <Box sx={{ mt: 3 }}>
-                <Typography variant="h6" gutterBottom>
+            <Box sx={{ mt: 3, p: 2, bgcolor: '#f9f9f9', borderRadius: 2 }}>
+                <Typography variant="h5" gutterBottom>
                     Market Insights
                 </Typography>
 
-                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold', color: '#1976d2' }}>
                     Primary Audience Demographics
                 </Typography>
                 <Typography variant="body1" paragraph>
                     {apiResponse.primaryAudienceDemographics}
                 </Typography>
 
-                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold', color: '#1976d2' }}>
                     Pain Points Addressed
                 </Typography>
                 <List>
@@ -390,16 +390,16 @@ const MarketAudienceForm = () => {
                     ))}
                 </List>
 
-                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold', color: '#1976d2' }}>
                     Competitors
                 </Typography>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
                     {apiResponse.competitors.map((competitor, index) => (
-                        <Chip key={index} label={competitor} variant="outlined" />
+                        <Chip key={index} label={competitor} variant="outlined" color="primary" />
                     ))}
                 </Box>
 
-                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, fontWeight: 'bold', color: '#1976d2' }}>
                     Market Position
                 </Typography>
                 <Typography variant="body1" paragraph>
@@ -409,7 +409,7 @@ const MarketAudienceForm = () => {
                 <Button
                     variant="contained"
                     onClick={handleReset}
-                    sx={{ mt: 3 }}
+                    sx={{ mt: 3, bgcolor: '#1976d2', '&:hover': { bgcolor: '#115293' } }}
                 >
                     Submit Another Response
                 </Button>
