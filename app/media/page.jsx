@@ -1,4 +1,4 @@
-import MarketAudienceForm from "@/components/translate/MarketAudienceForm";
+import MarketAudienceForm from "@/components/media/MarketAudienceForm";
 
 export default function MarketAnalysisPage() {
     return (

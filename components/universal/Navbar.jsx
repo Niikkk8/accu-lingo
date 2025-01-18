@@ -26,10 +26,10 @@ const NavBar = () => {
             }`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
-                    <div className="flex items-center">
+                    <Link href='/' className="flex items-center">
                         <Globe2 className="h-8 w-8 text-indigo-600 transform transition-transform hover:rotate-180 duration-1000" />
                         <span className="ml-2 text-2xl font-bold text-gray-900">AccuLingo</span>
-                    </div>
+                    </Link>
                     <div className="flex items-center space-x-8">
                         <button
                             onClick={(e) => handleNavClick(e, 'features')}
