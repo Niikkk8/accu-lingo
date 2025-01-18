@@ -1,6 +1,7 @@
 {
   "name": "accu-lingo",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -9,9 +10,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@datastax/astra-db-ts": "^1.5.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.0",
+    "dotenv": "^16.4.7",
     "lucide-react": "^0.473.0",
     "next": "15.1.5",
     "react": "^19.0.0",
