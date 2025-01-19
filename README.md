@@ -1,5 +1,3 @@
-# Automated Multilingual Article Marketing
-
 ## Overview
 We addressed a combination of **Problem Statement 1** and **Problem Statement 2**, focusing on improving article publishing across various platforms. Our solution leverages the capabilities of **Large Language Models (LLMs)**, including **LLaMA**, **Mistral**, and **Gemini**, to enhance the quality, relevance, and adaptability of content for diverse audiences and mediums.
 
@@ -14,6 +12,8 @@ By integrating these state-of-the-art LLMs with a robust front-end, our solution
 2. **Article Post Generation Based on Brand Details**
 3. **Multilingual Articles**
 4. **Web Scraping for Media Insights**
+![WhatsApp Image 2025-01-18 at 23 57 19_e1166db0](https://github.com/user-attachments/assets/5948f3ff-f474-46de-935d-14def588446a)
+
 
 ---
 
@@ -33,6 +33,9 @@ Users are prompted to provide specific information about the product, such as:
 - **Unique Selling Points (USPs)**
 - **Primary Problem Solved**
 
+![WhatsApp Image 2025-01-18 at 23 55 49_21cff0bc](https://github.com/user-attachments/assets/74a46f83-248f-457f-82ce-d2dd051ef7e5)
+
+
 ### 3. Media Scraping and Insights Generation
 The system scrapes relevant media data from sources like **social media platforms**, **blogs**, and **competitor websites** to gain valuable insights. Based on the collected data, the system generates actionable insights, including:
 - **Pain Points**: Challenges faced by the target audience.
@@ -49,10 +52,15 @@ The system then generates an **English article**, customized to meet the brand's
 ### 5. Audio/Video Transcription and Translation
 - Users can upload **audio/video content**, which the system transcribes into text.
 - The transcribed text is translated into **10 native Indian languages**, allowing for broader reach and accessibility.
+![WhatsApp Image 2025-01-19 at 00 00 42_8a14bab6](https://github.com/user-attachments/assets/7d05bdbe-ddfc-4019-a192-37bc87fed108)
+
 
 ### 6. Multilingual Conversion and Quality Check
 - The English article and transcriptions are translated into **10 native Indian languages** with cultural relevance and linguistic accuracy.
 - Translations are evaluated using **BLEU** and **ROUGE scores**, ensuring high-quality content across languages.
+
+![WhatsApp Image 2025-01-18 at 23 56 11_731be278](https://github.com/user-attachments/assets/1ffd07c7-7630-464b-868b-3ec5b8cee396)
+
 
 ---
 
@@ -74,6 +82,9 @@ The system then generates an **English article**, customized to meet the brand's
 
 6. **Quality Metrics**
    - BLEU and ROUGE scores are used to evaluate the accuracy and quality of translations and generated content.
+
+![WhatsApp Image 2025-01-18 at 23 57 11_5fa8e0e9](https://github.com/user-attachments/assets/b1c18171-cec8-459b-91a4-05129917d6e4)
+
 
 ---
 
