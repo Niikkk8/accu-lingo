@@ -1,5 +1,3 @@
-![WhatsApp Image 2025-01-18 at 23 57 19_e1166db0](https://github.com/user-attachments/assets/53dcb879-f910-442b-b06a-a8463fad452f)# Automated Multilingual Article Marketing
-
 ## Overview
 We addressed a combination of **Problem Statement 1** and **Problem Statement 2**, focusing on improving article publishing across various platforms. Our solution leverages the capabilities of **Large Language Models (LLMs)**, including **LLaMA**, **Mistral**, and **Gemini**, to enhance the quality, relevance, and adaptability of content for diverse audiences and mediums.
 
