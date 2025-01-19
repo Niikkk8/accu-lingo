@@ -19,7 +19,9 @@ import {
     Alert,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useRouter } from 'next/navigation';
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "@/firebase"; // Ensure Firebase is initialized here
+import { useRouter } from "next/navigation";
 
 // Theme configuration
 const theme = createTheme({
@@ -332,10 +334,10 @@ const CompleteForm = () => {
                 };
 
                 // Generate article content
-                const response = await fetch('https://content-insight-api.onrender.com/generate', {
-                    method: 'POST',
+                const response = await fetch("https://content-insight-api.onrender.com/generate", {
+                    method: "POST",
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                     body: JSON.stringify(apiData),
                 });
@@ -343,7 +345,7 @@ const CompleteForm = () => {
                 const result = await response.json();
 
                 if (!result.content?.article) {
-                    setShowError('Article generation failed');
+                    setShowError("Article generation failed");
                     return;
                 }
 
@@ -360,41 +362,25 @@ const CompleteForm = () => {
                         bengali: "",
                         malayalam: "",
                         punjabi: "",
-                        odia: ""
-                    }
+                        odia: "",
+                    },
                 };
 
-                // Create complete data with article
+                // Create complete data with the article
                 const completeData = {
                     ...apiData,
-                    articleGeneration: formattedArticle
+                    articleGeneration: formattedArticle,
                 };
 
-                // Store in database
-                const dbResponse = await fetch('/api/brand-create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(completeData),
-                });
+                // Add the document to Firestore
+                const articlesCollection = collection(db, "articles"); // Reference the "articles" collection
+                const docRef = await addDoc(articlesCollection, completeData);
 
-                if (!dbResponse.ok) {
-                    throw new Error('Database operation failed');
-                }
-
-                const dbResult = await dbResponse.json();
-
-                if (!dbResult?.id) {
-                    throw new Error('Invalid response from database');
-                }
-
-                setShowSuccess(true);
-                router.push(`/article/${dbResult.id}`);
-
+                // Push the user to the article page using the document ID
+                router.push(`/article/${docRef.id}`);
             } catch (error) {
-                console.error('Submission error:', error);
-                setShowError(error.message || 'An error occurred during submission');
+                console.error("Submission error:", error);
+                setShowError(error.message || "An error occurred during submission");
             }
         }
     };

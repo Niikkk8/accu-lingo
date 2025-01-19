@@ -68,6 +68,12 @@ const NavBar = () => {
                         >
                             Generate Articles
                         </Link>
+                        {/* <Link
+                            href="/translation"
+                            className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transform transition-transform hover:scale-105"
+                        >
+                            Translate Text
+                        </Link> */}
                     </div>
                 </div>
             </div>
