@@ -63,6 +63,12 @@ const NavBar = () => {
                             Media Scraper
                         </Link>
                         <Link
+                            href="https://github.com/Chinmay072/Transcriber-Translator"
+                            className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transform transition-transform hover:scale-105"
+                        >
+                            Video Transcriber
+                        </Link>
+                        <Link
                             href="/media"
                             className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transform transition-transform hover:scale-105"
                         >
