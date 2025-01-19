@@ -10,12 +10,48 @@ const LANGUAGES = {
     kannada: 'ಕನ್ನಡ',
     telugu: 'తెలుగు',
     bengali: 'বাংলা',
-    malayalam: 'മലയาളം',
+    malayalam: 'മലയാളം',
     punjabi: 'ਪੰਜਾਬੀ',
-    odia: 'ଓଡ଼ിଆ'
+    odia: 'ଓଡ଼ିଆ'
 };
 
-const ArticleDisplay = ({ article, currentLanguage = 'english' }) => {
+const MetricsDisplay = ({ metrics }) => {
+    if (!metrics) return null;
+
+    return (
+        <div className="mb-6 bg-white shadow-lg rounded-xl p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Translation Quality Metrics</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <span className="block text-sm font-medium text-gray-500 mb-1">BLEU Score</span>
+                    <span className="text-lg font-semibold text-blue-600">
+                        {(metrics.bleu * 100).toFixed(2)}%
+                    </span>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <span className="block text-sm font-medium text-gray-500 mb-1">ROUGE-1</span>
+                    <span className="text-lg font-semibold text-blue-600">
+                        {(metrics['rouge-1'] * 100).toFixed(2)}%
+                    </span>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <span className="block text-sm font-medium text-gray-500 mb-1">ROUGE-2</span>
+                    <span className="text-lg font-semibold text-blue-600">
+                        {(metrics['rouge-2'] * 100).toFixed(2)}%
+                    </span>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <span className="block text-sm font-medium text-gray-500 mb-1">ROUGE-L</span>
+                    <span className="text-lg font-semibold text-blue-600">
+                        {(metrics['rouge-l'] * 100).toFixed(2)}%
+                    </span>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const ArticleDisplay = ({ article, id, language = 'english', translationMetrics }) => {
     const brandName = article?.basicInfo?.brandName || 'Our Brand';
 
     // Extract title and content
@@ -25,7 +61,29 @@ const ArticleDisplay = ({ article, currentLanguage = 'english' }) => {
     const articlePara = fullArticle.replace(/^Title:\s*.+?(?=\s+\w)/, '').trim();
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto px-4 pb-8 pt-20">
+            {/* Language Navigation */}
+            <div className="mb-6 bg-white shadow-lg rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Available Languages</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {Object.entries(LANGUAGES).map(([langCode, langName]) => (
+                        <Link
+                            key={langCode}
+                            href={`/article/${id}/${langCode}`}
+                            className={`flex items-center justify-center px-4 py-2 rounded-lg text-gray-700 transition-colors duration-200 border ${language === langCode
+                                    ? 'bg-blue-50 border-blue-200 text-blue-700'
+                                    : 'bg-gray-50 border-gray-200 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200'
+                                }`}
+                        >
+                            {langName}
+                        </Link>
+                    ))}
+                </div>
+            </div>
+
+            {/* Translation Metrics */}
+            {language !== 'english' && <MetricsDisplay metrics={translationMetrics} />}
+
             <div className="bg-white shadow-xl rounded-xl overflow-hidden">
                 {/* Header Section */}
                 <div className="bg-gradient-to-r from-blue-50 to-white p-8 border-b border-gray-200">
@@ -67,22 +125,6 @@ const ArticleDisplay = ({ article, currentLanguage = 'english' }) => {
                             </span>
                         ))}
                     </div>
-                </div>
-
-                {/* Language Navigation */}
-                <div className="bg-gray-50 px-8 py-4 flex flex-wrap justify-center gap-2 border-b border-gray-200">
-                    {Object.entries(LANGUAGES).map(([code, name]) => (
-                        <Link
-                            key={code}
-                            href={`/article/${article.id}/${code}`}
-                            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap no-underline transition-colors duration-200 ${currentLanguage === code
-                                    ? 'bg-blue-600 text-white shadow-sm'
-                                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
-                                }`}
-                        >
-                            {name}
-                        </Link>
-                    ))}
                 </div>
 
                 {/* Article Content */}

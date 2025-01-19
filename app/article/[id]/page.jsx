@@ -53,10 +53,7 @@ export async function generateMetadata({ params }) {
         const keywords = article.articleDetails?.keywordsToEmphasize || [];
         const language = params.language || 'english';
 
-        const title =
-            language === 'english'
-                ? `${brandName}: Revolutionary ${industry} Solutions for ${targetAudience}`
-                : `${brandName}: ${industry} Solutions - ${language.charAt(0).toUpperCase() + language.slice(1)}`;
+        const title = `${brandName}: Revolutionary ${industry} Solutions for ${targetAudience}`
 
         const description = `Discover how ${brandName} is revolutionizing ${industry} for ${targetAudience}. Learn about our innovative solutions and industry-leading features.`;
 
@@ -82,13 +79,13 @@ export async function generateMetadata({ params }) {
 }
 
 // Main Article Page Component
-export default async function ArticlePage({ params: { id, language = 'english' } }) {
+export default async function ArticlePage({ params: { id } }) {
     try {
         const articleData = await getArticleData(id);
 
         return (
             <div className="min-h-screen">
-                <ArticleDisplay article={articleData} currentLanguage={language} />
+                <ArticleDisplay article={articleData} id={id} />
             </div>
         );
     } catch (error) {
